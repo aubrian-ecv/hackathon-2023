@@ -1,8 +1,8 @@
 export class Detector {
-    words = [];
-    wordsDetected = {};
+    private words: string[] = [];
+    private wordsDetected: {[key: string]: number} = {};
 
-    constructor(words) {
+    constructor(words: string[]) {
         this.words = words;
     }
 
