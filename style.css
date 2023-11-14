@@ -1,0 +1,24 @@
+body {
+    background-color: #082027;
+    width: 350px;
+    color: white;
+    border-radius: 200px;
+    padding: 10px;
+}
+
+.popup-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.popup-header img {
+    width: 60px;
+    height: 60px;
+}
+
+.popup-header h1 {
+    font-weight: normal;
+    font-family: "Gluten", cursive;
+}
