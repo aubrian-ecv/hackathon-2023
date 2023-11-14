@@ -6,7 +6,8 @@ export default defineConfig({
       input: {
         background: 'src/background.ts', // Le chemin vers votre script d'arrière-plan
         content_script: 'src/content.ts', // Le chemin vers votre script de contenu
-        popup: 'src/popup.ts'
+        popup: 'src/popup.ts',
+        test: 'src/test.ts'
         // Ajoutez d'autres points d'entrée si nécessaire
       },
       output: {
