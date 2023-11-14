@@ -1,5 +1,5 @@
 body {
-    background-color: #082027;
+    background-color: #0A272F;
     width: 350px;
     color: white;
     border-radius: 200px;
@@ -21,4 +21,52 @@ body {
 .popup-header h1 {
     font-weight: normal;
     font-family: "Gluten", cursive;
+}
+
+.popup-infos div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-percentage {
+    font-size: 1.25rem;
+}
+
+.popup-percentage span {
+    font-size: 2rem;
+    color: #48DC68;
+}
+
+.popup-range {
+    width: 300px;
+    background: linear-gradient(
+    to right,
+    #48DC68 2%,
+    #60777E 2% 100%
+  );
+    border-radius: 20px;
+    height: 30px;
+    border: 1px solid white;
+}
+
+.popup-words {
+    background-color: #082027;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.popup-words ul {
+    padding-inline-start: 20px;
+    font-size: 1rem;
+}
+
+.popup-carbon {
+    font-size: 1.15rem;
+}
+
+.popup-carbon span {
+    color: #48DC68;
+    font-size: 1.5rem;
 }
