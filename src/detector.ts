@@ -1,4 +1,4 @@
-class Detector {
+export class Detector {
     words = [];
     wordsDetected = {};
 
@@ -23,6 +23,3 @@ class Detector {
         return new Detector(['durabilité', 'vert', 'écologique', 'bio']);
     }
 }
-
-const detector = Detector.create();
-console.log(detector.detect());
