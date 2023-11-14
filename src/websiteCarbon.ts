@@ -1,5 +1,5 @@
 class WebsiteCarbonAPI {
-    async getCarbonData(url) {
+    async getCarbonData(url: string) {
       try {
         const apiUrl = `https://api.websitecarbon.com/site?url=${encodeURIComponent(url)}`;
         const response = await fetch(apiUrl);
