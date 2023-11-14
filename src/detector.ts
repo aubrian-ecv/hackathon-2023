@@ -1,6 +1,6 @@
 export class Detector {
     private words: string[] = [];
-    private wordsDetected: {[key: string]: number} = {};
+    private wordsDetected: { [key: string]: number } = {};
 
     constructor(words: string[]) {
         this.words = words;
@@ -9,10 +9,12 @@ export class Detector {
     detect() {
         // Search in the DOM for the words and count them
         document.body.innerText.split(' ').forEach(word => {
-            if (this.wordsDetected[word]) {
-                this.wordsDetected[word]++;
-            } else {
-                this.wordsDetected[word] = 1;
+            if (this.words.indexOf(word) !== -1) {
+                if (this.wordsDetected[word]) {
+                    this.wordsDetected[word]++;
+                } else {
+                    this.wordsDetected[word] = 1;
+                }
             }
         });
 
@@ -20,6 +22,6 @@ export class Detector {
     }
 
     static create() {
-        return new Detector(['durabilité', 'vert', 'écologique', 'bio']);
+        return new Detector(['durabilité', 'vert', 'écologique', 'bio', 'Summary']);
     }
 }

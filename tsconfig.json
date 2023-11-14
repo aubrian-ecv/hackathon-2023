@@ -15,7 +15,8 @@
             "es6",
             "dom"
         ], // Bibliothèques par défaut à inclure dans la compilation
-        "allowSyntheticDefaultImports": true // Permet les imports par défaut pour les modules sans export par défaut
+        "allowSyntheticDefaultImports": true, // Permet les imports par défaut pour les modules sans export par défaut
+        "removeComments": false
     },
     "include": [
         "src/**/*"

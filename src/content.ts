@@ -1,4 +1,9 @@
 import { Detector } from './detector.js';
 
-const detector = Detector.create();
-console.log(detector.detect());
+// @ts-ignore
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === 'countWords') {
+        const detector = Detector.create();
+        sendResponse(detector.detect());
+    }
+});
