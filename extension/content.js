@@ -7,7 +7,7 @@ getTabUrl().then(url => {
   (async () => {
     // Sends a message to the service worker and receives a tip in response
     chrome.runtime.sendMessage({ carbon: url }).then()
-    
+
     chrome.storage.local.get(["carbon"]).then((result) => {
       console.log("Value currently is ", result.carbon);
       let carbon = 0;
@@ -16,7 +16,7 @@ getTabUrl().then(url => {
       } else {
         carbon = result.carbon.statistics.co2.grid.grams
       }
-      
+
       const carbonSpan = document.getElementById('carbon');
       carbonSpan.innerText = carbon.toFixed(2) + 'g';
     });
@@ -24,8 +24,20 @@ getTabUrl().then(url => {
 });
 
 chrome.storage.onChanged.addListener((changes, namespace) => {
+  console.log('STORAGE CHANGES', changes, namespace);
+
   for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
-    console.log(key, newValue);
+    if (key === 'carbon') {
+      let carbon = 0;
+      if (newValue.statistics.co2.renewable) {
+        carbon = newValue.statistics.co2.renewable.grams
+      } else {
+        carbon = newValue.statistics.co2.grid.grams
+      }
+
+      const carbonSpan = document.getElementById('carbon');
+      carbonSpan.innerText = carbon.toFixed(2) + 'g';
+    }
   }
 });
 

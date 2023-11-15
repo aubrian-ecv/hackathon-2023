@@ -18,7 +18,8 @@
     "content_scripts": [
       {
         "matches": ["https://developer.chrome.com/docs/extensions/reference/*"],
-        "js": ["content.js"]
+        "js": ["content.js"],
+        "run_at": "document_start"
       }
     ],
     "action": {
