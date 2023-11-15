@@ -5,12 +5,21 @@ async function getTabUrl() {
 }
 console.log(getTabUrl())
 
-async function changeBackgroundColorToActiveTab() {
+function getTitle() { return document.title; }
+async function test() {
     const queryOptions = { active: true, currentWindow: true };
     const tabs = await chrome.tabs.query(queryOptions);
+    let ifBodyExist:any = null;
+
     chrome.scripting.executeScript({
         target: { tabId: tabs[0].id },
-        func: () => {document.body.style.backgroundColor = 'red';}
+        func: getTitle
+    })
+    .then(injectionResults => {
+      for (const {frameId, result} of injectionResults) {
+        console.log(`Frame ${frameId} result:`, result);
+      }
     });
 }
-changeBackgroundColorToActiveTab()
+
+test()
