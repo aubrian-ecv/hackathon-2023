@@ -1,14 +1,27 @@
 {
-  "manifest_version": 3,
-  "name": "GreenDetect",
-  "version": "1.0",
-  "permissions": ["activeTab", "storage", "scripting", "tabs"],
-  "icons": {
-    "16": "images/icon16.png",
-    "48": "images/icon48.png",
-    "128": "images/icon128.png"
-  },
-  "action": {
-    "default_popup": "popup.html"
+    "manifest_version": 3,
+    "name": "Greedny",
+    "version": "1.0.0",
+    "permissions": ["activeTab", "storage", "scripting", "tabs"],
+    "icons": {
+      "16": "images/icon16.png",
+      "48": "images/icon48.png",
+      "128": "images/icon128.png"
+    },
+    "background": {
+      "service_worker": "service-worker.js",
+      "type": "module"  
+    },
+    "host_permissions": [
+      "https://*/"
+    ],
+    "content_scripts": [
+      {
+        "matches": ["https://developer.chrome.com/docs/extensions/reference/*"],
+        "js": ["content.js"]
+      }
+    ],
+    "action": {
+      "default_popup": "popup.html"
+    }
   }
-}

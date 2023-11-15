@@ -113,10 +113,9 @@ function getWords() {
 }
 
 function getCarbonData() {
-    console.log(window.location.href);
     const apiUrl = `https://d597-195-135-0-87.ngrok-free.app/carbondata?url=${encodeURIComponent(window.location.href)}`;
 
-    fetch(apiUrl)
+    return fetch(apiUrl)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`API request failed with status: ${response.status}`);
@@ -167,7 +166,7 @@ async function getTabUrl() {
             }
         });
 
-    chrome.tabs.executeScript({
+    chrome.scripting.executeScript({
         target: { tabId: tabs[0].id },
         func: getCarbonData
     })
