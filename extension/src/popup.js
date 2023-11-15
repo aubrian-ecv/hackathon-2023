@@ -112,39 +112,31 @@ function getWords() {
     return { allPageWords, wordsDetected };
 }
 
-async function getCarbonData(url) {
-    try {
-        const apiUrl = `https://api.websitecarbon.com/site?url=${encodeURIComponent(url)}`;
-        const response = await fetch(apiUrl);
+function getCarbonData() {
+    console.log(window.location.href);
+    const apiUrl = `http://localhost:3000/carbondata?url=${encodeURIComponent(window.location.href)}`;
 
-        if (!response.ok) {
-            throw new Error(`API request failed with status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching carbon data:', error);
-        throw error;
-    }
+    return fetch(apiUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`API request failed with status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+            return data;
+        })
+        .catch(error => {
+            console.error('Error fetching carbon data:', error);
+            throw error;
+        });
 }
 
 async function getTabUrl() {
     const queryOptions = { active: true, currentWindow: true };
     const tabs = await chrome.tabs.query(queryOptions);
     return tabs[0].url;
-}
-
-function getCarbon() {
-    const iframe = document.createElement('iframe');
-    const url = window.location.href;
-    iframe.src = `https://api.websitecarbon.com/site?url=${encodeURIComponent(url)}`
-    iframe.onload = () => {
-        setTimeout(() => {
-            console.log("IFRAME DATA", iframe.textContent);
-        }, 500)
-    };
-    document.body.appendChild(iframe);
 }
 
 (async () => {
@@ -177,6 +169,11 @@ function getCarbon() {
 
     chrome.scripting.executeScript({
         target: { tabId: tabs[0].id },
-        func: getCarbon
+        func: getCarbonData
     })
+    .then(injectionResults => {
+        for (const { frameId, result } of injectionResults) {
+            console.log(result)
+        }
+    });
 })();
