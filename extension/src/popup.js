@@ -114,9 +114,9 @@ function getWords() {
 
 function getCarbonData() {
     console.log(window.location.href);
-    const apiUrl = `http://localhost:3000/carbondata?url=${encodeURIComponent(window.location.href)}`;
+    const apiUrl = `https://d597-195-135-0-87.ngrok-free.app/carbondata?url=${encodeURIComponent(window.location.href)}`;
 
-    return fetch(apiUrl)
+    fetch(apiUrl)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`API request failed with status: ${response.status}`);
@@ -167,13 +167,13 @@ async function getTabUrl() {
             }
         });
 
-    chrome.scripting.executeScript({
+    chrome.tabs.executeScript({
         target: { tabId: tabs[0].id },
         func: getCarbonData
     })
-    .then(injectionResults => {
-        for (const { frameId, result } of injectionResults) {
-            console.log(result)
-        }
-    });
+        .then(injectionResults => {
+            for (const { frameId, result } of injectionResults) {
+                console.log(result);
+            }
+        });
 })();
