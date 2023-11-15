@@ -1,7 +1,27 @@
-(async () => {
-  // Sends a message to the service worker and receives a tip in response
-  const { data } = await chrome.runtime.sendMessage({ greeting: 'carbon' });
-})();
+async function getTabUrl() {
+  const queryOptions = { active: true, currentWindow: true };
+  const tabs = await chrome.tabs.query(queryOptions);
+  return tabs[0].url;
+}
+getTabUrl().then(url => {
+  (async () => {
+    // Sends a message to the service worker and receives a tip in response
+    chrome.runtime.sendMessage({ carbon: url }).then()
+    
+    chrome.storage.local.get(["carbon"]).then((result) => {
+      console.log("Value currently is ", result.carbon);
+      let carbon = 0;
+      if (result.carbon.statistics.co2.renewable) {
+        carbon = result.carbon.statistics.co2.renewable.grams
+      } else {
+        carbon = result.carbon.statistics.co2.grid.grams
+      }
+      
+      const carbonSpan = document.getElementById('carbon');
+      carbonSpan.innerText = carbon.toFixed(2) + 'g';
+    });
+  })();
+});
 
 chrome.storage.onChanged.addListener((changes, namespace) => {
   for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
