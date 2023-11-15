@@ -129,26 +129,27 @@ async function getCarbonData(url) {
     }
 }
 
-
 async function getTabUrl() {
     const queryOptions = { active: true, currentWindow: true };
     const tabs = await chrome.tabs.query(queryOptions);
     return tabs[0].url;
 }
 
+function getCarbon() {
+    const iframe = document.createElement('iframe');
+    const url = window.location.href;
+    iframe.src = `https://api.websitecarbon.com/site?url=${encodeURIComponent(url)}`
+    iframe.onload = () => {
+        setTimeout(() => {
+            console.log("IFRAME DATA", iframe.textContent);
+        }, 500)
+    };
+    document.body.appendChild(iframe);
+}
+
 (async () => {
     const queryOptions = { active: true, currentWindow: true };
     const tabs = await chrome.tabs.query(queryOptions);
-
-    const carbonSpan = document.getElementById('carbon');
-    const url = await getTabUrl();
-    getCarbonData(url)
-        .then(data => {
-            console.log(carbonSpan, data);
-            if (carbonSpan) {
-                carbonSpan.innerText = data.statistics.co2.grid.grams
-            }
-        })
 
     chrome.scripting.executeScript({
         target: { tabId: tabs[0].id },
@@ -173,4 +174,9 @@ async function getTabUrl() {
                 }
             }
         });
+
+    chrome.scripting.executeScript({
+        target: { tabId: tabs[0].id },
+        func: getCarbon
+    })
 })();
