@@ -7,19 +7,24 @@ getTabUrl().then(url => {
   (async () => {
     // Sends a message to the service worker and receives a tip in response
     chrome.runtime.sendMessage({ carbon: url }).then()
-
-    chrome.storage.local.get(["carbon"]).then((result) => {
-      console.log("Value currently is ", result.carbon);
-      let carbon = 0;
-      if (result.carbon.statistics.co2.renewable) {
-        carbon = result.carbon.statistics.co2.renewable.grams
-      } else {
-        carbon = result.carbon.statistics.co2.grid.grams
-      }
-
-      const carbonSpan = document.getElementById('carbon');
-      carbonSpan.innerText = carbon.toFixed(2) + 'g';
-    });
+    const loop = setInterval(() => {
+      chrome.storage.session.get(["carbon"]).then((result) => {
+        let carbon = undefined;
+        if (result.carbon && result.carbon.statistics) {
+          if (result.carbon.statistics.co2.renewable) {
+            carbon = result.carbon.statistics.co2.renewable.grams
+          } else {
+            carbon = result.carbon.statistics.co2.grid.grams
+          }
+        }
+        if(carbon != undefined) {
+          console.log("carbon:", carbon)
+          const carbonSpan = document.getElementById('carbon');
+          carbonSpan.innerText = carbon.toFixed(2) + 'g';
+          clearInterval(loop)
+        }
+      });
+    }, 200);
   })();
 });
 
@@ -28,15 +33,20 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 
   for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
     if (key === 'carbon') {
-      let carbon = 0;
-      if (newValue.statistics.co2.renewable) {
-        carbon = newValue.statistics.co2.renewable.grams
-      } else {
-        carbon = newValue.statistics.co2.grid.grams
+      let carbon = undefined;
+      if (newValue.carbon && newValue.carbon.statistics) {
+        if (newValue.carbon.statistics.co2.renewable) {
+          carbon = newValue.carbon.statistics.co2.renewable.grams
+        } else {
+          carbon = newValue.carbon.statistics.co2.grid.grams
+        }
       }
-
-      const carbonSpan = document.getElementById('carbon');
-      carbonSpan.innerText = carbon.toFixed(2) + 'g';
+      if(carbon != undefined) {
+        console.log("carbon:", carbon)
+        const carbonSpan = document.getElementById('carbon');
+        carbonSpan.innerText = carbon.toFixed(2) + 'g';
+        clearInterval(loop)
+      }
     }
   }
 });
@@ -174,3 +184,10 @@ function getWords() {
       }
     });
 })();
+
+chrome.tabs.onActivated.addListener(() => {
+    if(chrome.storage.session.get(['carbon']) != undefined) {
+      chrome.storage.session.remove(['carbon'])
+    }
+  }
+)
