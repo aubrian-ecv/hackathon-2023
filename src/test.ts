@@ -21,5 +21,4 @@ async function test() {
       }
     });
 }
-
-test()
+document.getElementById('button').addEventListener('click', test);
