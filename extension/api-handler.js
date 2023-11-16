@@ -5,7 +5,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         fetch(`https://api.websitecarbon.com/site?url=${encodeURIComponent(url)}`)
             .then(response => {
                 if (!response.ok) {
-                    console.error(`API request failed with status: ${response.status}`)
+                    console.error(`API request failed with status: ${response}`)
                     throw new Error();
                 }
                 return response.json();
