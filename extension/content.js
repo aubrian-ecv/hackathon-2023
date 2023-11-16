@@ -9,7 +9,7 @@ getTabUrl().then(url => {
     chrome.runtime.sendMessage({ carbon: url }).then()
     chrome.storage.session.get(["carbon"]).then((result) => {
       let carbon = undefined;
-      if (result.carbon && result.carbon.statistics) {
+      if (result.carbon && result.carbon.statistics && result.carbon.url == url) {
         if (result.carbon.statistics.co2.renewable) {
           carbon = result.carbon.statistics.co2.renewable.grams
         } else {
