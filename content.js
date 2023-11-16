@@ -13,18 +13,18 @@ chrome.storage.session.get((keys) => {
       const totalPageWords = Math.max(words.allPageWords.length, 1); // Empêche la division par zéro
       const totalWordsDetected = Object.values(words.wordsDetected).reduce((a, b) => a + b, 0);
       const ratioWords = (totalWordsDetected / totalPageWords) * 1000; // Clamp la valeur entre 0 et 1
-      
+
       // Calcul du ratio poids/mots
       const weightRatio = words.totalWeight / totalWordsDetected;
 
       console.log(weightRatio)
       score = ratioWords + 0.15 * weightRatio + 0.15 * words.totalWeight
 
-      if(score < 30) {
+      if (score < 30) {
         document.getElementById('score').style.color = "#48DC68"
-      } else if(score < 60){
+      } else if (score < 60) {
         document.getElementById('score').style.color = "#EAD82F"
-      } else if(score < 100){
+      } else if (score < 100) {
         document.getElementById('score').style.color = "#EA892F"
       } else {
         document.getElementById('score').style.color = "#EA2F2F"
@@ -65,7 +65,7 @@ getTabUrl().then(url => {
           carbonSpan.innerText = carbon.toFixed(2) + 'g CO₂/visite';
         }
       });
-    } catch{}
+    } catch { }
   })();
 });
 
@@ -105,11 +105,11 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
         console.log(weightRatio)
         score = ratioWords + 0.15 * weightRatio + 0.15 * words.totalWeight
 
-        if(score < 30) {
+        if (score < 30) {
           document.getElementById('score').style.color = "#48DC68"
-        } else if(score < 60){
+        } else if (score < 60) {
           document.getElementById('score').style.color = "#EAD82F"
-        } else if(score < 100){
+        } else if (score < 100) {
           document.getElementById('score').style.color = "#EA892F"
         } else {
           document.getElementById('score').style.color = "#EA2F2F"
@@ -221,7 +221,7 @@ function getWords() {
 
           // Trier le tableau en fonction du nombre de résultats (en ordre décroissant)
           wordResults.sort((a, b) => b.count - a.count);
-            for (const { word, count } of wordResults) {
+          for (const { word, count } of wordResults) {
             const li = document.createElement('li');
             li.innerText = `${word} : ${count}`;
             wordsList.appendChild(li);

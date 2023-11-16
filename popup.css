@@ -53,28 +53,29 @@ body {
     overflow-y: auto;
     width: 80%;
 }
+
 /* width */
 .popup-words ul::-webkit-scrollbar {
     width: 6px;
 }
-  
-  /* Track */
+
+/* Track */
 .popup-words ul::-webkit-scrollbar-track {
     background: #05151a;
     border-radius: 4px;
 }
-  
-  /* Handle */
+
+/* Handle */
 .popup-words ul::-webkit-scrollbar-thumb {
     background: #19637a;
     border-radius: 4px;
 }
-  
-  /* Handle on hover */
-  .popup-words ul::-webkit-scrollbar-thumb:hover {
+
+/* Handle on hover */
+.popup-words ul::-webkit-scrollbar-thumb:hover {
     background: #103e4b;
     cursor: pointer;
-  }
+}
 
 .popup-carbon {
     font-size: 0.85rem;
@@ -85,7 +86,8 @@ body {
     color: #48DC68;
 }
 
-.score,.carbon {
+.score,
+.carbon {
     display: block;
     text-align: center;
 }
@@ -106,6 +108,7 @@ button.aboutButton {
     margin: 0 auto;
     display: block;
 }
+
 button.aboutButton:hover {
     cursor: pointer;
     background-color: #082027;
