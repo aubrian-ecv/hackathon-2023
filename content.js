@@ -1,4 +1,10 @@
 document.getElementById('score').innerText = "...%"
+
+document.getElementById('aboutButton').addEventListener('click', () => {
+  chrome.tabs.create({
+    url: "about.html"
+  });
+})
 chrome.storage.session.get((keys) => {
   if (keys.words) {
     const words = keys.words;
