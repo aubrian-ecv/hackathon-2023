@@ -27,13 +27,8 @@ getTabUrl().then(url => {
 chrome.storage.onChanged.addListener((changes, namespace) => {
   const entries = Object.entries(changes);
 
-  console.log("STORAGE CHANGED", entries);
-
-  let wordsDetected = undefined, carbonDetected = undefined;
-
   for (let [key, { oldValue, newValue }] of entries) {
     if (key === 'carbon') {
-      carbonDetected = true;
       let carbon = undefined;
       if (newValue && newValue.statistics) {
         if (newValue.statistics.co2.renewable) {
@@ -47,15 +42,19 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
         carbonSpan.innerText = carbon.toFixed(2) + 'g';
       }
     }
-
-    if (key === "words") {
-      wordsDetected = newValue;
-    }
   }
 
-  if (wordsDetected && carbonDetected) {
-    console.log("CALCULER SCORE", wordsDetected, carbonDetected);
-  }
+  chrome.storage.session.get((keys) => {
+    let score = 0.4 * (1 - keys.carbon.cleanerThan);
+    const words = keys.words;
+    const totalPageWords = Math.max(words.allPageWords.length, 1); // Empêche la division par zéro
+    const totalWordsDetected = Object.values(words.wordsDetected).reduce((a, b) => a + b, 0);
+    const ratioWords = Math.max(0, Math.min(1, totalWordsDetected / totalPageWords)); // Clamp la valeur entre 0 et 1
+    score += 0.6 * ratioWords;
+    score = (score * 100).toFixed(2);
+    document.getElementById('score').innerText = score + '%';
+    document.getElementById('score-range').style.background = `linear-gradient(to right, #48DC68 ${score}%, #60777E ${score}% 100%`
+  })
 });
 
 function getWords() {
