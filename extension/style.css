@@ -41,15 +41,15 @@ body {
 
 .popup-range {
     width: 300px;
-    background: linear-gradient(
+    /* background: linear-gradient(
     to right,
     #48DC68 2%,
     #60777E 2% 100%
-  );
+  ); */
     border-radius: 20px;
-    height: 30px;
+    height: 60px;
     border: 1px solid white;
-    transition: background;
+    transition: all 0.5s ease;
 }
 
 .popup-words {
