@@ -7,47 +7,54 @@ getTabUrl().then(url => {
   (async () => {
     // Sends a message to the service worker and receives a tip in response
     chrome.runtime.sendMessage({ carbon: url }).then()
-    const loop = setInterval(() => {
-      chrome.storage.session.get(["carbon"]).then((result) => {
-        let carbon = undefined;
-        if (result.carbon && result.carbon.statistics) {
-          if (result.carbon.statistics.co2.renewable) {
-            carbon = result.carbon.statistics.co2.renewable.grams
-          } else {
-            carbon = result.carbon.statistics.co2.grid.grams
-          }
+    chrome.storage.session.get(["carbon"]).then((result) => {
+      let carbon = undefined;
+      if (result.carbon && result.carbon.statistics) {
+        if (result.carbon.statistics.co2.renewable) {
+          carbon = result.carbon.statistics.co2.renewable.grams
+        } else {
+          carbon = result.carbon.statistics.co2.grid.grams
         }
-        if(carbon != undefined) {
-          console.log("carbon:", carbon)
-          const carbonSpan = document.getElementById('carbon');
-          carbonSpan.innerText = carbon.toFixed(2) + 'g';
-          clearInterval(loop)
-        }
-      });
-    }, 200);
+      }
+      if (carbon != undefined) {
+        const carbonSpan = document.getElementById('carbon');
+        carbonSpan.innerText = carbon.toFixed(2) + 'g';
+      }
+    });
   })();
 });
 
 chrome.storage.onChanged.addListener((changes, namespace) => {
-  console.log('STORAGE CHANGES', changes, namespace);
+  const entries = Object.entries(changes);
 
-  for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
+  console.log("STORAGE CHANGED", entries);
+
+  let wordsDetected = undefined, carbonDetected = undefined;
+
+  for (let [key, { oldValue, newValue }] of entries) {
     if (key === 'carbon') {
+      carbonDetected = true;
       let carbon = undefined;
-      if (newValue.carbon && newValue.carbon.statistics) {
-        if (newValue.carbon.statistics.co2.renewable) {
-          carbon = newValue.carbon.statistics.co2.renewable.grams
+      if (newValue && newValue.statistics) {
+        if (newValue.statistics.co2.renewable) {
+          carbon = newValue.statistics.co2.renewable.grams
         } else {
-          carbon = newValue.carbon.statistics.co2.grid.grams
+          carbon = newValue.statistics.co2.grid.grams
         }
       }
-      if(carbon != undefined) {
-        console.log("carbon:", carbon)
+      if (carbon != undefined) {
         const carbonSpan = document.getElementById('carbon');
         carbonSpan.innerText = carbon.toFixed(2) + 'g';
-        clearInterval(loop)
       }
     }
+
+    if (key === "words") {
+      wordsDetected = newValue;
+    }
+  }
+
+  if (wordsDetected && carbonDetected) {
+    console.log("CALCULER SCORE", wordsDetected, carbonDetected);
   }
 });
 
@@ -173,6 +180,9 @@ function getWords() {
       for (const { frameId, result } of injectionResults) {
         console.log(`Frame ${frameId} result:`, result);
         const wordsList = document.getElementById('words-list');
+
+        chrome.storage.session.set({ words: result })
+
         if (wordsList) {
           wordsList.innerHTML = '';
           for (const word in result.wordsDetected) {
@@ -186,8 +196,7 @@ function getWords() {
 })();
 
 chrome.tabs.onActivated.addListener(() => {
-    if(chrome.storage.session.get(['carbon']) != undefined) {
-      chrome.storage.session.remove(['carbon'])
-    }
+  if (chrome.storage.session.get(['carbon']) != undefined) {
+    chrome.storage.session.remove(['carbon'])
   }
-)
+})
