@@ -39,41 +39,88 @@ body {
     color: #48DC68;
 }
 
-.popup-range {
-    width: 300px;
-    /* background: linear-gradient(
-    to right,
-    #48DC68 2%,
-    #60777E 2% 100%
-  ); */
-    border-radius: 20px;
-    height: 60px;
-    border: 1px solid white;
-    transition: all 0.5s ease;
-}
-
 .popup-words {
     background-color: #082027;
-    padding: 10px;
+    margin: 0;
     border-radius: 10px;
 }
 
 .popup-words ul {
-    padding-inline-start: 20px;
+    margin: 6px 0;
     font-size: 1rem;
     text-transform: capitalize;
+    max-height: 140px;
+    overflow-y: auto;
+    width: 80%;
 }
+/* width */
+.popup-words ul::-webkit-scrollbar {
+    width: 6px;
+}
+  
+  /* Track */
+.popup-words ul::-webkit-scrollbar-track {
+    background: #05151a;
+    border-radius: 4px;
+}
+  
+  /* Handle */
+.popup-words ul::-webkit-scrollbar-thumb {
+    background: #19637a;
+    border-radius: 4px;
+}
+  
+  /* Handle on hover */
+  .popup-words ul::-webkit-scrollbar-thumb:hover {
+    background: #103e4b;
+    cursor: pointer;
+  }
 
 .popup-carbon {
-    font-size: 1.15rem;
+    font-size: 0.85rem;
+    padding-top: 20px;
 }
 
 .popup-carbon span {
     color: #48DC68;
-    font-size: 1.5rem;
 }
 
-.score {
+.score,.carbon {
     display: block;
+    text-align: center;
+}
+
+.warning {
+    text-align: center;
+}
+
+button.aboutButton {
+    border-radius: 6px;
+    outline: #48DC68 solid 1px;
+    border: none;
+    background-color: #0A272F;
+    padding: 6px 12px;
+    color: white;
+    transition: 0.3s backgroundcolor, 0.3s color;
+    inset: 0;
+    margin: 0 auto;
+    display: block;
+}
+button.aboutButton:hover {
+    cursor: pointer;
+    background-color: #082027;
+    color: #48DC68;
+}
+
+.words {
+    max-width: 80%;
+    min-width: 60%;
+    width: auto;
+    inset: 0;
+    margin: 0 auto;
+    padding-top: 10px;
+}
+
+.words h2 {
     text-align: center;
 }

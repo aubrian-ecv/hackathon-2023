@@ -1,26 +1,39 @@
-document.getElementById('score').innerText = "...%"
-
 document.getElementById('aboutButton').addEventListener('click', () => {
   chrome.tabs.create({
     url: "about.html"
   });
 })
+
 chrome.storage.session.get((keys) => {
   if (keys.words) {
     const words = keys.words;
+    let score = 0
     if (words.totalWeight != 0) {
+      document.getElementById('words').style.display = "block"
       const totalPageWords = Math.max(words.allPageWords.length, 1); // Empêche la division par zéro
       const totalWordsDetected = Object.values(words.wordsDetected).reduce((a, b) => a + b, 0);
       const ratioWords = (totalWordsDetected / totalPageWords) * 1000; // Clamp la valeur entre 0 et 1
+      
       // Calcul du ratio poids/mots
       const weightRatio = words.totalWeight / totalWordsDetected;
 
       console.log(weightRatio)
       score = ratioWords + 0.15 * weightRatio + 0.15 * words.totalWeight
 
+      if(score < 30) {
+        document.getElementById('score').style.color = "#48DC68"
+      } else if(score < 60){
+        document.getElementById('score').style.color = "#EAD82F"
+      } else if(score < 100){
+        document.getElementById('score').style.color = "#EA892F"
+      } else {
+        document.getElementById('score').style.color = "#EA2F2F"
+      }
       document.getElementById('score').innerText = score.toFixed(2);
     } else {
-      document.getElementById('score').innerText = "0";
+      document.getElementById('words').style.display = "none"
+      document.getElementById('score').style.color = "#48DC68"
+      document.getElementById('score').innerText = "0"
     }
   }
 })
@@ -35,22 +48,24 @@ async function getTabUrl() {
 }
 getTabUrl().then(url => {
   (async () => {
-    // Sends a message to the service worker and receives a tip in response
-    chrome.runtime.sendMessage({ carbon: url }).then()
-    chrome.storage.session.get(["carbon"]).then((result) => {
-      let carbon = undefined;
-      if (result.carbon && result.carbon.statistics && result.carbon.url == url) {
-        if (result.carbon.statistics.co2.renewable) {
-          carbon = result.carbon.statistics.co2.renewable.grams
-        } else {
-          carbon = result.carbon.statistics.co2.grid.grams
+    try {
+      // Sends a message to the service worker and receives a tip in response
+      chrome.runtime.sendMessage({ carbon: url }).then()
+      chrome.storage.session.get(["carbon"]).then((result) => {
+        let carbon = undefined;
+        if (result.carbon && result.carbon.statistics && result.carbon.url == url) {
+          if (result.carbon.statistics.co2.renewable) {
+            carbon = result.carbon.statistics.co2.renewable.grams
+          } else {
+            carbon = result.carbon.statistics.co2.grid.grams
+          }
         }
-      }
-      if (carbon != undefined) {
-        const carbonSpan = document.getElementById('carbon');
-        carbonSpan.innerText = carbon.toFixed(2) + 'g';
-      }
-    });
+        if (carbon != undefined) {
+          const carbonSpan = document.getElementById('carbon');
+          carbonSpan.innerText = carbon.toFixed(2) + 'g CO₂/visite';
+        }
+      });
+    } catch{}
   })();
 });
 
@@ -69,7 +84,7 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
       }
       if (carbon != undefined) {
         const carbonSpan = document.getElementById('carbon');
-        carbonSpan.innerText = carbon.toFixed(2) + 'g';
+        carbonSpan.innerText = carbon.toFixed(2) + 'g CO₂/visite';
       }
     }
   }
@@ -78,7 +93,9 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
     const words = keys.words;
 
     if (keys.words) {
+      let score = 0
       if (words.totalWeight != 0) {
+        document.getElementById('words').style.display = "block"
         const totalPageWords = Math.max(words.allPageWords.length, 1); // Empêche la division par zéro
         const totalWordsDetected = Object.values(words.wordsDetected).reduce((a, b) => a + b, 0);
         const ratioWords = (totalWordsDetected / totalPageWords) * 1000; // Clamp la valeur entre 0 et 1
@@ -88,10 +105,20 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
         console.log(weightRatio)
         score = ratioWords + 0.15 * weightRatio + 0.15 * words.totalWeight
 
+        if(score < 30) {
+          document.getElementById('score').style.color = "#48DC68"
+        } else if(score < 60){
+          document.getElementById('score').style.color = "#EAD82F"
+        } else if(score < 100){
+          document.getElementById('score').style.color = "#EA892F"
+        } else {
+          document.getElementById('score').style.color = "#EA2F2F"
+        }
         document.getElementById('score').innerText = score.toFixed(2);
-
       } else {
-        document.getElementById('score').innerText = "0";
+        document.getElementById('words').style.display = "none"
+        document.getElementById('score').style.color = "#48DC68"
+        document.getElementById('score').innerText = "0"
       }
     }
   })
@@ -187,9 +214,16 @@ function getWords() {
 
         if (wordsList) {
           wordsList.innerHTML = '';
+          const wordResults = [];
           for (const word in result.wordsDetected) {
+            wordResults.push({ word, count: result.wordsDetected[word] });
+          }
+
+          // Trier le tableau en fonction du nombre de résultats (en ordre décroissant)
+          wordResults.sort((a, b) => b.count - a.count);
+            for (const { word, count } of wordResults) {
             const li = document.createElement('li');
-            li.innerText = `${word} : ${result.wordsDetected[word]}`;
+            li.innerText = `${word} : ${count}`;
             wordsList.appendChild(li);
           }
         }
