@@ -1,20 +1,21 @@
 document.getElementById('progress').value = 0;
 document.getElementById('score').innerText = "...%"
 chrome.storage.session.get((keys) => {
-  if(keys.carbon && keys.words) {
-    let score = 0.2 * (1 - keys.carbon.cleanerThan);
+  if(keys.words) {
     const words = keys.words;
     if (words.totalWeight != 0) {
       const totalPageWords = Math.max(words.allPageWords.length, 1); // Empêche la division par zéro
       const totalWordsDetected = Object.values(words.wordsDetected).reduce((a, b) => a + b, 0);
-      const ratioWords = Math.max(0, Math.min(1, totalWordsDetected / totalPageWords)); // Clamp la valeur entre 0 et 1
-      score += 0.8 * ratioWords;
-      score = score.toFixed(2);
-      document.getElementById('progress').value = score;
-      document.getElementById('score').innerText = score*100 + "%";
+      const ratioWords = (totalWordsDetected / totalPageWords)*1000; // Clamp la valeur entre 0 et 1
+      // Calcul du ratio poids/mots
+      const weightRatio = words.totalWeight / totalWordsDetected;
+
+      console.log(weightRatio)
+      score = ratioWords + 0.15 * weightRatio + 0.15*words.totalWeight
+  
+      document.getElementById('score').innerText = score.toFixed(2);
     } else {
-      document.getElementById('progress').value = 0;
-      document.getElementById('score').innerText = 0 + "%";
+      document.getElementById('score').innerText = "0";
     }
   }
 })
@@ -71,18 +72,20 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
   chrome.storage.session.get((keys) => {
     const words = keys.words;
     
-    if(keys.carbon && keys.words) {
+    if (keys.words) {
       if (words.totalWeight != 0) {
         const totalPageWords = Math.max(words.allPageWords.length, 1); // Empêche la division par zéro
         const totalWordsDetected = Object.values(words.wordsDetected).reduce((a, b) => a + b, 0);
-        const ratioWords = Math.max(0, Math.min(1, totalWordsDetected / totalPageWords)); // Clamp la valeur entre 0 et 1
-        score += 0.8 * ratioWords;
-        score = score.toFixed(2);
-        document.getElementById('progress').value = score;
-        document.getElementById('score').innerText = score*100 + "%";
+        const ratioWords = (totalWordsDetected / totalPageWords)*1000; // Clamp la valeur entre 0 et 1
+        // Calcul du ratio poids/mots
+        const weightRatio = words.totalWeight / totalWordsDetected;
+  
+        console.log(weightRatio)
+        score = ratioWords + 0.15 * weightRatio + 0.15*words.totalWeight
+    
+        document.getElementById('score').innerText = score.toFixed(2);
       } else {
-        document.getElementById('progress').value = 0;
-        document.getElementById('score').innerText = 0 + "%";
+        document.getElementById('score').innerText = "0";
       }
     }
   })
@@ -102,7 +105,11 @@ function getWords() {
     "écologie": 12,
     "ecologique": 12,
     "ecologie": 12,
+    "écologiques": 12,
+    "ecologiques": 12,
     "biodégradable": 8,
+    "biodegradable": 8,
+    "biodégradables": 8,
     "biodegradable": 8,
     "recyclable": 8,
     "recyclé": 8,
@@ -131,6 +138,7 @@ function getWords() {
     "naturels": 12,
     "naturelle": 12,
     "environnement": 4,
+    "l’environnement": 4,
     "éco-conscient": 12,
     "eco-conscient": 12,
     "climatiquement": 20,
