@@ -1,18 +1,17 @@
-document.getElementById('progress').value = 0;
 document.getElementById('score').innerText = "...%"
 chrome.storage.session.get((keys) => {
-  if(keys.words) {
+  if (keys.words) {
     const words = keys.words;
     if (words.totalWeight != 0) {
       const totalPageWords = Math.max(words.allPageWords.length, 1); // Empêche la division par zéro
       const totalWordsDetected = Object.values(words.wordsDetected).reduce((a, b) => a + b, 0);
-      const ratioWords = (totalWordsDetected / totalPageWords)*1000; // Clamp la valeur entre 0 et 1
+      const ratioWords = (totalWordsDetected / totalPageWords) * 1000; // Clamp la valeur entre 0 et 1
       // Calcul du ratio poids/mots
       const weightRatio = words.totalWeight / totalWordsDetected;
 
       console.log(weightRatio)
-      score = ratioWords + 0.15 * weightRatio + 0.15*words.totalWeight
-  
+      score = ratioWords + 0.15 * weightRatio + 0.15 * words.totalWeight
+
       document.getElementById('score').innerText = score.toFixed(2);
     } else {
       document.getElementById('score').innerText = "0";
@@ -71,19 +70,20 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 
   chrome.storage.session.get((keys) => {
     const words = keys.words;
-    
+
     if (keys.words) {
       if (words.totalWeight != 0) {
         const totalPageWords = Math.max(words.allPageWords.length, 1); // Empêche la division par zéro
         const totalWordsDetected = Object.values(words.wordsDetected).reduce((a, b) => a + b, 0);
-        const ratioWords = (totalWordsDetected / totalPageWords)*1000; // Clamp la valeur entre 0 et 1
+        const ratioWords = (totalWordsDetected / totalPageWords) * 1000; // Clamp la valeur entre 0 et 1
         // Calcul du ratio poids/mots
         const weightRatio = words.totalWeight / totalWordsDetected;
-  
+
         console.log(weightRatio)
-        score = ratioWords + 0.15 * weightRatio + 0.15*words.totalWeight
-    
+        score = ratioWords + 0.15 * weightRatio + 0.15 * words.totalWeight
+
         document.getElementById('score').innerText = score.toFixed(2);
+
       } else {
         document.getElementById('score').innerText = "0";
       }
@@ -93,10 +93,10 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 
 function getWords() {
   const words = {
-    "éco-friendly":30,
-    "eco-friendly":30,
-    "durabilité":4,
-    "durable":6,
+    "éco-friendly": 30,
+    "eco-friendly": 30,
+    "durabilité": 4,
+    "durable": 6,
     "bio": 12,
     "naturel": 12,
     "vert": 2,
