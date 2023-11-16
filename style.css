@@ -72,3 +72,8 @@ body {
     color: #48DC68;
     font-size: 1.5rem;
 }
+
+.score {
+    display: block;
+    text-align: center;
+}
